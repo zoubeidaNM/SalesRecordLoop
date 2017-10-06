@@ -62,15 +62,22 @@ public class SalesRecordLoop {
     public static void displayDetails(int customerID, String customerName,
                                       double salesAmount, String taxCode) {
         System.out.println("\n---------------------------------------------------------------");
-        System.out.println("Customer ID       : " + customerID);
-        System.out.println("Customer name     : " + customerName);
-        System.out.println("Sales amount      : $" + salesAmount);
-        System.out.println("Tax code          : " + taxCode.toUpperCase());
+        System.out.println("Customer ID        : " + customerID);
+        System.out.println("Customer name      : " + customerName);
+        System.out.println("Sales amount       : $" + salesAmount);
+
+        //add the discount
+        double discountedSalesAmount = Math.round (applyDiscount(salesAmount) * 100.0)/100.0;
+        if (salesAmount > 5000) {
+            System.out.println("Discounted amount  : $" + discountedSalesAmount);
+        }
+
+        System.out.println("Tax code           : " + taxCode.toUpperCase());
 
         //calculate total amount
-        double totalAmount = calculateTotalAmount(salesAmount, taxCode);
+        double totalAmount = calculateTotalAmount(discountedSalesAmount, taxCode);
 
-        System.out.println("Total Amount Due  : $" + totalAmount);
+        System.out.println("Total Amount Due   : $" + totalAmount);
         System.out.println("---------------------------------------------------------------\n\n");
 
     }
@@ -93,7 +100,7 @@ public class SalesRecordLoop {
             System.out.println("*****(" + taxCode + ")" + " Invalid tax code.*****");
 
         }
-        return totalAmount;
+        return Math.round (totalAmount * 100.0)/100.0;
 
 
     }
@@ -112,7 +119,7 @@ public class SalesRecordLoop {
 
     //Check if the tax code is valid
     //Tax codes NRM = 6%, NPF =  0%, BIZ = 4.5%
-    public static boolean checkIfTaxCodeValid(String taxCode){
+    public static boolean checkIfTaxCodeValid(String taxCode) {
         if (taxCode.equalsIgnoreCase("NRM")) {
             return true;
         } else if (taxCode.equalsIgnoreCase("BIZ")) {
@@ -122,6 +129,24 @@ public class SalesRecordLoop {
         } else {
             System.out.println("*****(" + taxCode + ")" + " Invalid. Please enter a valid tax code (NRM/BIZ/NPF). *****");
             return false;
+        }
+
+    }
+
+    //Apply discount as needed, over 5000 = 3%, over 10000 = 2%, over 15000 = 1%
+    public static double applyDiscount(double salesAmount) {
+        if (salesAmount <= 5000) {
+            System.out.println("**No discount        ");
+            return salesAmount;
+        } else if ((salesAmount > 5000) && (salesAmount <= 10000)) {
+            System.out.println("**Discount 3%        ");
+            return salesAmount * (0.97);
+        } else if ((salesAmount > 10000) && (salesAmount <= 15000)) {
+            System.out.println("**Discount 2%        ");
+            return salesAmount * (0.98);
+        } else {
+            System.out.println("**Discount 1%        ");
+            return salesAmount * (0.99);
         }
 
     }
